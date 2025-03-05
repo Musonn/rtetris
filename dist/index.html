@@ -6,8 +6,8 @@
     <title>Tetris</title>
     
 <script type="module">
-import init, * as bindings from '/rtetris-35f674ea3f711863.js';
-const wasm = await init({ module_or_path: '/rtetris-35f674ea3f711863_bg.wasm' });
+import init, * as bindings from '/rtetris-fa3787e90b835e22.js';
+const wasm = await init({ module_or_path: '/rtetris-fa3787e90b835e22_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -16,7 +16,7 @@ window.wasmBindings = bindings;
 dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
 </script>
-<link rel="modulepreload" href="/rtetris-35f674ea3f711863.js" crossorigin="anonymous" integrity="sha384-FayabL032rByoZ26OmjAxOLWR5ay1d+0dcSKQFQPLBpVnb9ewqSjTBp2Hb61bpWh"><link rel="preload" href="/rtetris-35f674ea3f711863_bg.wasm" crossorigin="anonymous" integrity="sha384-xzyr4nKKUlrGJyO9imd4M1Koz9KolSbxmtvdozAHBbL2qilr6mgYCzvvHplzbxbY" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="/rtetris-fa3787e90b835e22.js" crossorigin="anonymous" integrity="sha384-COV8eWNlCjzqoBt3zfNFZqgas1uXOiFVzjRNKQVAftpQcYdz1dv59mquW+ssRMpp"><link rel="preload" href="/rtetris-fa3787e90b835e22_bg.wasm" crossorigin="anonymous" integrity="sha384-JepGKUtL/1UDBC8OZoofyMfKBLt2ktWpKZNVch1WfS5oEYeduuYdrn8I4H8iWiR8" as="fetch" type="application/wasm"></head>
 <body>
 <script>"use strict";
 
