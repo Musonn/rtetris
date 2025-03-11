@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tetris</title>
-    
+    <title>Rust Tetris</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link your CSS file -->
+<link rel="modulepreload" href="/rtetris-18e6ed929b37a29b.js" crossorigin="anonymous" integrity="sha384-+3tD+xqSEF4viEJc66X6j+cO18CyUmUjsydXXVnCgzzjcAzI61Ef0qpTES9CA0N3"><link rel="preload" href="/rtetris-18e6ed929b37a29b_bg.wasm" crossorigin="anonymous" integrity="sha384-w2TBKLu+TZj6vEQHP5edCknmIggdheFPena6jkWxAuvgdnLxD3iqJ5UEIG/mxmxW" as="fetch" type="application/wasm"></head>
+<body>
+    <div id="app"></div>
+    <script type="module" src="rtetris-18e6ed929b37a29b.js"></script>
+
 <script type="module">
-import init, * as bindings from '/rtetris-fa3787e90b835e22.js';
-const wasm = await init({ module_or_path: '/rtetris-fa3787e90b835e22_bg.wasm' });
+import init, * as bindings from '/rtetris-18e6ed929b37a29b.js';
+const wasm = await init({ module_or_path: '/rtetris-18e6ed929b37a29b_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -15,10 +20,7 @@ window.wasmBindings = bindings;
 
 dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
-</script>
-<link rel="modulepreload" href="/rtetris-fa3787e90b835e22.js" crossorigin="anonymous" integrity="sha384-COV8eWNlCjzqoBt3zfNFZqgas1uXOiFVzjRNKQVAftpQcYdz1dv59mquW+ssRMpp"><link rel="preload" href="/rtetris-fa3787e90b835e22_bg.wasm" crossorigin="anonymous" integrity="sha384-JepGKUtL/1UDBC8OZoofyMfKBLt2ktWpKZNVch1WfS5oEYeduuYdrn8I4H8iWiR8" as="fetch" type="application/wasm"></head>
-<body>
-<script>"use strict";
+</script><script>"use strict";
 
 (function () {
 

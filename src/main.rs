@@ -24,7 +24,7 @@ fn app() -> Html {
         <div>
             <h1>{ "Tetris in Rust!" }</h1>
             <button onclick={move_down}>{ "Move Down" }</button>
-            <p>{ format!("Tetromino Position: {:?}", active_tetromino.position) }</p>
+            { board.render() }
         </div>
     }
 }

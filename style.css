@@ -1,0 +1,28 @@
+.board {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 10px;
+    border: 2px solid black;
+    background: white;
+}
+
+.row {
+    display: flex;
+}
+
+.cell {
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+    background: gray !important; /* Force apply */
+}
+
+
+.empty {
+    background: white;
+}
+
+.filled {
+    background: black;
+}
