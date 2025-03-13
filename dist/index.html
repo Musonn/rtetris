@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rust Tetris</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link your CSS file -->
-<link rel="modulepreload" href="/rtetris-18e6ed929b37a29b.js" crossorigin="anonymous" integrity="sha384-+3tD+xqSEF4viEJc66X6j+cO18CyUmUjsydXXVnCgzzjcAzI61Ef0qpTES9CA0N3"><link rel="preload" href="/rtetris-18e6ed929b37a29b_bg.wasm" crossorigin="anonymous" integrity="sha384-w2TBKLu+TZj6vEQHP5edCknmIggdheFPena6jkWxAuvgdnLxD3iqJ5UEIG/mxmxW" as="fetch" type="application/wasm"></head>
+    <link rel="stylesheet" href="/style-f9aeb3e71d863f07.css" integrity="sha384&#x2D;wNuDxhnZ2J&#x2F;UyRGWoOvUMXsiH57eaQw&#x2F;MY4tPq6ILrXd6MuTFwnYYI9Ymu8ZfB4G"/>
+<link rel="modulepreload" href="/rtetris-1706367586b543ba.js" crossorigin="anonymous" integrity="sha384-p0ZUXjWqR7ZOIBGhIWNkzu2Zd9vI6rmsUkJaX3UUtw/vsxZ5KDkX1MQUN0Fjjwis"><link rel="preload" href="/rtetris-1706367586b543ba_bg.wasm" crossorigin="anonymous" integrity="sha384-9EeKhuev6XNHxG/qbHoWqo4/K57IAK20FzeowCw7cRg7xD51ieo4MCphQ2UPTGKA" as="fetch" type="application/wasm"></head>
 <body>
-    <div id="app"></div>
-    <script type="module" src="rtetris-18e6ed929b37a29b.js"></script>
+    <script type="module">
+        import init from "./rtetris.js";
+        init();
+    </script>
 
 <script type="module">
-import init, * as bindings from '/rtetris-18e6ed929b37a29b.js';
-const wasm = await init({ module_or_path: '/rtetris-18e6ed929b37a29b_bg.wasm' });
+import init, * as bindings from '/rtetris-1706367586b543ba.js';
+const wasm = await init({ module_or_path: '/rtetris-1706367586b543ba_bg.wasm' });
 
 
 window.wasmBindings = bindings;
