@@ -3,15 +3,33 @@ use yew::prelude::*;
 pub const WIDTH: usize = 10;
 pub const HEIGHT: usize = 20;
 
+#[derive(Clone)]
 pub struct Board {
     grid: [[bool; WIDTH]; HEIGHT], // Fixed-size 2D array; true = filled
 }
 
 impl Board {
     pub fn new() -> Self {
-        Self {
+        let mut board = Self {
             grid: [[false; WIDTH]; HEIGHT],
+        };
+    
+        // Randomly fill one cell to test reactivity
+        let x = 0;
+        let y = 0;
+        board.grid[y][x] = true;
+    
+        board
+    }
+
+    pub fn update(&mut self) {
+        // Example logic: move all filled cells down
+        for y in (1..HEIGHT).rev() {
+            for x in 0..WIDTH {
+                self.grid[y][x] = self.grid[y - 1][x];
+            }
         }
+        self.grid[0] = [false; WIDTH]; // Clear the top row
     }
 
     pub fn is_cell_empty(&self, x: usize, y: usize) -> bool {

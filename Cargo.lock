@@ -596,6 +596,7 @@ name = "rtetris"
 version = "0.1.0"
 dependencies = [
  "futures",
+ "gloo-timers",
  "wasm-bindgen",
  "yew",
 ]
