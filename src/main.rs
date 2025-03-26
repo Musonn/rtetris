@@ -1,4 +1,5 @@
 mod game;
+mod tetromino;
 use game::Board;
 use yew::prelude::*;
 use gloo_timers::callback::Interval;

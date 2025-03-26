@@ -1,4 +1,5 @@
 use yew::prelude::*;
+use crate::tetromino::{Tetromino, TetrominoType};
 
 pub const WIDTH: usize = 10;
 pub const HEIGHT: usize = 20;
@@ -6,12 +7,14 @@ pub const HEIGHT: usize = 20;
 #[derive(Clone)]
 pub struct Board {
     grid: [[bool; WIDTH]; HEIGHT], // Fixed-size 2D array; true = filled
+    tetromino: Option<Tetromino>,// Active tetromino (None if no active piece)
 }
 
 impl Board {
     pub fn new() -> Self {
         let mut board = Self {
             grid: [[false; WIDTH]; HEIGHT],
+            tetromino: None,
         };
     
         // Randomly fill one cell to test reactivity
@@ -22,14 +25,15 @@ impl Board {
         board
     }
 
+    pub fn spawn_tetromino(&mut self, shape: TetrominoType) {
+        self.tetromino = Some(Tetromino::new(shape));
+    }
+
     pub fn update(&mut self) {
-        // Example logic: move all filled cells down
-        for y in (1..HEIGHT).rev() {
-            for x in 0..WIDTH {
-                self.grid[y][x] = self.grid[y - 1][x];
-            }
+        // Move the active tetromino down if it exists
+        if let Some(tetromino) = &mut self.tetromino {
+            tetromino.move_down();
         }
-        self.grid[0] = [false; WIDTH]; // Clear the top row
     }
 
     pub fn is_cell_empty(&self, x: usize, y: usize) -> bool {
