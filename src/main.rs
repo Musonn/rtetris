@@ -17,6 +17,8 @@ fn app() -> Html {
             let interval = Interval::new(500, move || {
                 board.set({
                     let mut new_board = (*board).clone();
+                    new_board.clear_grid();
+                    new_board.place_tetromino();
                     new_board.update();
                     new_board
                 });

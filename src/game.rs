@@ -17,11 +17,8 @@ impl Board {
             tetromino: None,
         };
     
-        // Randomly fill one cell to test reactivity
-        let x = 0;
-        let y = 0;
-        board.grid[y][x] = true;
-    
+        board.spawn_tetromino(TetrominoType::I);
+
         board
     }
 
@@ -40,8 +37,12 @@ impl Board {
         self.grid[y][x] == false
     }
 
-    pub fn set_cell(&mut self, x: usize, y: usize, value: bool) {
-        self.grid[y][x] = value;
+    pub fn set_cell(&mut self, x: usize, y: usize) {
+        if x < WIDTH && y < HEIGHT {
+            self.grid[y][x] = true;
+        } else {
+            panic!("Coordinates out of bounds");
+        }
     }
 
     pub fn clear_full_lines(&mut self) {
@@ -57,6 +58,24 @@ impl Board {
         }
 
         self.grid = new_grid; // Update board with the cleared version
+    }
+
+    pub fn clear_grid(&mut self) {
+        self.grid = [[false; WIDTH]; HEIGHT]; // Reset the grid to empty
+    }
+
+    pub fn place_tetromino(&mut self) {
+    // Set the cells of the tetromino on the grid
+    if let Some(tetromino) = &self.tetromino {
+        let cells = tetromino.cells.clone(); // Clone the cells to avoid borrowing `self`
+        let position = tetromino.position;  // Copy the position
+
+        for cell in cells.iter() {
+            let x = (cell[0] + position[0]) as usize;
+            let y = (cell[1] + position[1]) as usize;
+            self.set_cell(x, y); // Use set_cell to mark the cell as filled
+            }
+        }
     }
 
 pub fn render(&self) -> Html {
