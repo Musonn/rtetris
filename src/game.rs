@@ -18,6 +18,7 @@ impl Board {
         };
     
         board.spawn_tetromino(TetrominoType::I);
+        board.place_tetromino();
 
         board
     }
@@ -27,19 +28,25 @@ impl Board {
     }
 
     pub fn update(&mut self) {
+        // Clear the current tetromino from the grid
+        self.clear_tetromino();
+
         // Move the active tetromino down if it exists
         if let Some(tetromino) = &mut self.tetromino {
             tetromino.move_down();
         }
+
+        // Place the tetromino back on the grid in its new position
+        self.place_tetromino();
     }
 
     pub fn is_cell_empty(&self, x: usize, y: usize) -> bool {
         self.grid[y][x] == false
     }
 
-    pub fn set_cell(&mut self, x: usize, y: usize) {
+    pub fn set_cell(&mut self, x: usize, y: usize, filled: bool) {
         if x < WIDTH && y < HEIGHT {
-            self.grid[y][x] = true;
+            self.grid[y][x] = filled;
         } else {
             panic!("Coordinates out of bounds");
         }
@@ -73,7 +80,21 @@ impl Board {
         for cell in cells.iter() {
             let x = (cell[0] + position[0]) as usize;
             let y = (cell[1] + position[1]) as usize;
-            self.set_cell(x, y); // Use set_cell to mark the cell as filled
+            self.set_cell(x, y, true); // Use set_cell to mark the cell as filled
+            }
+        }
+    }
+
+    pub fn clear_tetromino(&mut self) {
+        // Clear the tetromino from the grid
+        if let Some(tetromino) = &self.tetromino {
+            let cells = tetromino.cells.clone(); // Clone the cells to avoid borrowing `self`
+            let position = tetromino.position;  // Copy the position
+
+            for cell in cells.iter() {
+                let x = (cell[0] + position[0]) as usize;
+                let y = (cell[1] + position[1]) as usize;
+                self.set_cell(x, y, false); // Use set_cell to mark the cell as empty
             }
         }
     }
