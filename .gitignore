@@ -1,1 +1,4 @@
 /target
+
+# Node.js (if applicable for Yew frontend)
+dist/
