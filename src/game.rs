@@ -30,14 +30,36 @@ impl Board {
     pub fn update(&mut self) {
         // Clear the current tetromino from the grid
         self.clear_tetromino();
-
+    
+        let mut landed = false;
+    
         // Move the active tetromino down if it exists
-        if let Some(tetromino) = &mut self.tetromino {
-            tetromino.move_down();
+        if let Some(tetromino) = &self.tetromino {
+            // Check if the tetromino can move down
+            for cell in &tetromino.cells {
+                let x = (cell[0] + tetromino.position[0]) as usize;
+                let y = (cell[1] + tetromino.position[1] + 1) as usize; // Check one row below
+    
+                if y >= HEIGHT || !self.is_cell_empty(x, y) {
+                    landed = true;
+                    break;
+                }
+            }
         }
-
+        
+        if let Some(tetromino) = &mut self.tetromino {
+            if !landed {
+                tetromino.move_down(); // Move down if not landed
+            }
+        }
+    
         // Place the tetromino back on the grid in its new position
         self.place_tetromino();
+    
+        // If the tetromino has landed, spawn a new one
+        if landed {
+            self.spawn_tetromino(TetrominoType::I); // Spawn a new tetromino (you can randomize this)
+        }
     }
 
     pub fn is_cell_empty(&self, x: usize, y: usize) -> bool {

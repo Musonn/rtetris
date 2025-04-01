@@ -14,7 +14,7 @@ fn app() -> Html {
         let board = board.clone();
         use_effect(move || {
             // Create the interval to update the board every 500ms
-            let interval = Interval::new(500, move || {
+            let interval = Interval::new(50, move || {
                 board.set({
                     let mut new_board = (*board).clone();
                     new_board.update();
