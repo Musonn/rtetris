@@ -27,6 +27,12 @@ impl Board {
         self.tetromino = Some(Tetromino::new(shape));
     }
 
+    pub fn rotate_tetromino(&mut self) {
+        if let Some(tetromino) = &mut self.tetromino {
+            tetromino.rotate();
+        }
+    }
+
     pub fn update(&mut self) {
         // Clear the current tetromino from the grid
         self.clear_tetromino();
