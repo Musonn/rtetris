@@ -10,11 +10,8 @@ A simple Tetris game implemented in Rust using the Yew framework.
 
 ## TODO
 
-### Wall Kicks (Optional)
-For a smoother user experience, implement a basic "wall kick" system:
-1. Try rotating the tetromino in place.
-2. If blocked, try nudging the tetromino left or right by 1 block.
-3. If still blocked, cancel the rotation.
+### Advanced Wall Kick
+When a rotation is attempted, 5 positions are sequentially tested (inclusive of basic rotation); if none are available, the rotation fails completely.
 
 ### Random Tetromino Spawn
 Ensure that new tetrominoes spawn randomly from the available shapes (`I`, `O`, `T`, `S`, `Z`, `J`, `L`).

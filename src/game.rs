@@ -29,7 +29,30 @@ impl Board {
 
     pub fn rotate_tetromino(&mut self) {
         if let Some(tetromino) = &mut self.tetromino {
-            tetromino.rotate();
+            let mut next_tetromino = tetromino.clone();
+    
+            // Step 1: Try rotating in place
+            next_tetromino.rotate();
+            if !self.is_collision(&next_tetromino) {
+                self.tetromino = Some(next_tetromino);
+                return;
+            }
+    
+            // Step 2: Try nudging left
+            next_tetromino.position[0] -= 1;
+            if !self.is_collision(&next_tetromino) {
+                self.tetromino = Some(next_tetromino);
+                return;
+            }
+    
+            // Step 3: Try nudging right
+            next_tetromino.position[0] += 2;
+            if !self.is_collision(&next_tetromino) {
+                self.tetromino = Some(next_tetromino);
+                return;
+            }
+    
+            // Step 4: Cancel rotation (do nothing)
         }
     }
 
@@ -78,6 +101,22 @@ impl Board {
         } else {
             panic!("Coordinates out of bounds");
         }
+    }
+
+    pub fn is_collision(&self, tetromino: &Tetromino) -> bool {
+        for cell in &tetromino.cells {
+            let x = (cell[0] + tetromino.position[0]) as isize;
+            let y = (cell[1] + tetromino.position[1]) as isize;
+
+            if x < 0 || x >= WIDTH as isize || y < 0 || y >= HEIGHT as isize {
+                return true; // Out of bounds
+            }
+
+            if y >= 0 && self.grid[y as usize][x as usize] {
+                return true; // Collision with filled cell
+            }
+        }
+        false
     }
 
     pub fn clear_full_lines(&mut self) {
