@@ -3,23 +3,6 @@ pub enum TetrominoType {
     I, O, T, S, Z, J, L,
 }
 
-pub const TETROMINOES: [[[i32; 2]; 4]; 7] = [
-    // I
-    [[0, 1], [1, 1], [2, 1], [3, 1]],
-    // O
-    [[0, 0], [1, 0], [0, 1], [1, 1]],
-    // T
-    [[1, 0], [0, 1], [1, 1], [2, 1]],
-    // S
-    [[1, 0], [2, 0], [0, 1], [1, 1]],
-    // Z
-    [[0, 0], [1, 0], [1, 1], [2, 1]],
-    // J
-    [[0, 0], [0, 1], [1, 1], [2, 1]],
-    // L
-    [[2, 0], [0, 1], [1, 1], [2, 1]],
-];
-
 pub const TETROMINO_ROTATIONS: [[[[i32; 2]; 4]; 4]; 7] = [
     // I shape
     [
@@ -87,7 +70,7 @@ impl Tetromino {
             shape,
             position: [3, 0], // Start near the top center
             rotation: 0,
-            cells: TETROMINOES[index],
+            cells: TETROMINO_ROTATIONS[index][0],
         }
     }
 
