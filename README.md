@@ -13,5 +13,5 @@ A simple Tetris game implemented in Rust using the Yew framework.
 ### Advanced Wall Kick
 When a rotation is attempted, 5 positions are sequentially tested (inclusive of basic rotation); if none are available, the rotation fails completely.
 
-### Random Tetromino Spawn
-Ensure that new tetrominoes spawn randomly from the available shapes (`I`, `O`, `T`, `S`, `Z`, `J`, `L`).
+### Show the Next Tetromino
+Add a peek_next() to show the upcoming piece.

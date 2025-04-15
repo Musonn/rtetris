@@ -1,5 +1,6 @@
 use yew::prelude::*;
 use crate::tetromino::{Tetromino, TetrominoType};
+use rand::seq::SliceRandom;
 
 pub const WIDTH: usize = 10;
 pub const HEIGHT: usize = 20;
@@ -8,6 +9,7 @@ pub const HEIGHT: usize = 20;
 pub struct Board {
     grid: [[bool; WIDTH]; HEIGHT], // Fixed-size 2D array; true = filled
     tetromino: Option<Tetromino>,// Active tetromino (None if no active piece)
+    next_queue: Vec<TetrominoType>, // Queue of upcoming tetrominos
 }
 
 impl Board {
@@ -15,15 +17,35 @@ impl Board {
         let mut board = Self {
             grid: [[false; WIDTH]; HEIGHT],
             tetromino: None,
+            next_queue: Vec::<TetrominoType>::new(),
         };
     
-        board.spawn_tetromino(TetrominoType::I);
+        board.spawn_tetromino();
         board.place_tetromino();
 
         board
     }
 
-    pub fn spawn_tetromino(&mut self, shape: TetrominoType) {
+    fn refill_bag(&mut self) {
+        let mut types = [
+            TetrominoType::I,
+            TetrominoType::O,
+            TetrominoType::T,
+            TetrominoType::S,
+            TetrominoType::Z,
+            TetrominoType::J,
+            TetrominoType::L,
+        ];
+        let mut rng = rand::rng();
+        types.shuffle(&mut rng);
+        self.next_queue.extend_from_slice(&types);
+    }
+
+    pub fn spawn_tetromino(&mut self) {
+        if self.next_queue.is_empty() {
+            self.refill_bag();
+        }
+        let shape = self.next_queue.remove(0); // Take from front of queue
         self.tetromino = Some(Tetromino::new(shape));
     }
 
@@ -87,7 +109,7 @@ impl Board {
     
         // If the tetromino has landed, spawn a new one
         if landed {
-            self.spawn_tetromino(TetrominoType::I); // Spawn a new tetromino (you can randomize this)
+            self.spawn_tetromino(); // Spawn a new tetromino (you can randomize this)
         }
     }
 
