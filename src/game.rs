@@ -8,7 +8,7 @@ pub const HEIGHT: usize = 20;
 #[derive(Clone)]
 pub struct Board {
     grid: [[bool; WIDTH]; HEIGHT], // Fixed-size 2D array; true = filled
-    tetromino: Option<Tetromino>,// Active tetromino (None if no active piece)
+    tetromino: Option<Tetromino>,  // Active tetromino (None if no active piece)
     next_queue: Vec<TetrominoType>, // Queue of upcoming tetrominos
 }
 
@@ -17,9 +17,9 @@ impl Board {
         let mut board = Self {
             grid: [[false; WIDTH]; HEIGHT],
             tetromino: None,
-            next_queue: Vec::<TetrominoType>::new(),
+            next_queue: Vec::new(),
         };
-    
+
         board.spawn_tetromino();
         board.place_tetromino();
 
@@ -36,7 +36,7 @@ impl Board {
             TetrominoType::J,
             TetrominoType::L,
         ];
-        let mut rng = rand::rng();
+        let mut rng = rand::thread_rng();
         types.shuffle(&mut rng);
         self.next_queue.extend_from_slice(&types);
     }
@@ -52,64 +52,59 @@ impl Board {
     pub fn rotate_tetromino(&mut self) {
         if let Some(tetromino) = &mut self.tetromino {
             let mut next_tetromino = tetromino.clone();
-    
+
             // Step 1: Try rotating in place
             next_tetromino.rotate();
             if !self.is_collision(&next_tetromino) {
                 self.tetromino = Some(next_tetromino);
                 return;
             }
-    
+
             // Step 2: Try nudging left
             next_tetromino.position[0] -= 1;
             if !self.is_collision(&next_tetromino) {
                 self.tetromino = Some(next_tetromino);
                 return;
             }
-    
+
             // Step 3: Try nudging right
             next_tetromino.position[0] += 2;
             if !self.is_collision(&next_tetromino) {
                 self.tetromino = Some(next_tetromino);
                 return;
             }
-    
+
             // Step 4: Cancel rotation (do nothing)
         }
     }
 
     pub fn update(&mut self) {
-        // Clear the current tetromino from the grid
         self.clear_tetromino();
-    
+
         let mut landed = false;
-    
-        // Move the active tetromino down if it exists
+
         if let Some(tetromino) = &self.tetromino {
-            // Check if the tetromino can move down
             for cell in &tetromino.cells {
                 let x = (cell[0] + tetromino.position[0]) as usize;
-                let y = (cell[1] + tetromino.position[1] + 1) as usize; // Check one row below
-    
+                let y = (cell[1] + tetromino.position[1] + 1) as usize;
+
                 if y >= HEIGHT || !self.is_cell_empty(x, y) {
                     landed = true;
                     break;
                 }
             }
         }
-        
+
         if let Some(tetromino) = &mut self.tetromino {
             if !landed {
-                tetromino.move_down(); // Move down if not landed
+                tetromino.move_down();
             }
         }
-    
-        // Place the tetromino back on the grid in its new position
+
         self.place_tetromino();
-    
-        // If the tetromino has landed, spawn a new one
+
         if landed {
-            self.spawn_tetromino(); // Spawn a new tetromino (you can randomize this)
+            self.spawn_tetromino();
         }
     }
 
@@ -131,45 +126,43 @@ impl Board {
             let y = (cell[1] + tetromino.position[1]) as isize;
 
             if x < 0 || x >= WIDTH as isize || y < 0 || y >= HEIGHT as isize {
-                return true; // Out of bounds
+                return true;
             }
 
             if y >= 0 && self.grid[y as usize][x as usize] {
-                return true; // Collision with filled cell
+                return true;
             }
         }
         false
     }
 
     pub fn clear_full_lines(&mut self) {
-        let mut new_grid = [[false; WIDTH]; HEIGHT]; // Start with empty grid
-        let mut new_row = HEIGHT as isize - 1; // Start from the bottom
+        let mut new_grid = [[false; WIDTH]; HEIGHT];
+        let mut new_row = HEIGHT as isize - 1;
 
-        // Iterate from bottom to top, shifting rows down if they are not full
         for y in (0..HEIGHT).rev() {
             if self.grid[y].iter().any(|&cell| !cell) {
-                new_grid[new_row as usize] = self.grid[y]; // Copy row
-                new_row -= 1; // Move up
+                new_grid[new_row as usize] = self.grid[y];
+                new_row -= 1;
             }
         }
 
-        self.grid = new_grid; // Update board with the cleared version
+        self.grid = new_grid;
     }
 
     pub fn clear_grid(&mut self) {
-        self.grid = [[false; WIDTH]; HEIGHT]; // Reset the grid to empty
+        self.grid = [[false; WIDTH]; HEIGHT];
     }
 
     pub fn place_tetromino(&mut self) {
-    // Set the cells of the tetromino on the grid
-    if let Some(tetromino) = &self.tetromino {
-        let cells = tetromino.cells.clone(); // Clone the cells to avoid borrowing `self`
-        let position = tetromino.position;  // Copy the position
+        if let Some(tetromino) = &self.tetromino {
+            let cells = tetromino.cells.clone();
+            let position = tetromino.position;
 
-        for cell in cells.iter() {
-            let x = (cell[0] + position[0]) as usize;
-            let y = (cell[1] + position[1]) as usize;
-            self.set_cell(x, y, true); // Use set_cell to mark the cell as filled
+            for cell in cells.iter() {
+                let x = (cell[0] + position[0]) as usize;
+                let y = (cell[1] + position[1]) as usize;
+                self.set_cell(x, y, true);
             }
         }
     }
@@ -183,7 +176,7 @@ impl Board {
             }
         }
     }
-    
+
     pub fn move_tetromino_right(&mut self) {
         if let Some(tetromino) = &mut self.tetromino {
             let mut next_tetromino = tetromino.clone();
@@ -193,7 +186,7 @@ impl Board {
             }
         }
     }
-    
+
     pub fn move_tetromino_down(&mut self) {
         if let Some(tetromino) = &mut self.tetromino {
             let mut next_tetromino = tetromino.clone();
@@ -205,15 +198,14 @@ impl Board {
     }
 
     pub fn clear_tetromino(&mut self) {
-        // Clear the tetromino from the grid
         if let Some(tetromino) = &self.tetromino {
-            let cells = tetromino.cells.clone(); // Clone the cells to avoid borrowing `self`
-            let position = tetromino.position;  // Copy the position
+            let cells = tetromino.cells.clone();
+            let position = tetromino.position;
 
             for cell in cells.iter() {
                 let x = (cell[0] + position[0]) as usize;
                 let y = (cell[1] + position[1]) as usize;
-                self.set_cell(x, y, false); // Use set_cell to mark the cell as empty
+                self.set_cell(x, y, false);
             }
         }
     }
@@ -221,7 +213,6 @@ impl Board {
     pub fn render(&self) -> Html {
         html! {
             <div class="board">
-                <p>{"If you see this, Yew is rendering the component."}</p>
                 { for self.grid.iter().map(|row| html! {
                     <div class="row">
                         { for row.iter().map(|&cell| html! {

@@ -1,5 +1,6 @@
 mod game;
 mod tetromino;
+
 use game::Board;
 use yew::prelude::*;
 use gloo_events::EventListener;
@@ -11,10 +12,10 @@ use wasm_bindgen::JsCast;
 fn app() -> Html {
     let board = use_state(|| Board::new());
 
+    // Interval to update the board every 500ms
     {
         let board = board.clone();
         use_effect(move || {
-            // Create the interval to update the board every 500ms
             let interval = Interval::new(500, move || {
                 board.set({
                     let mut new_board = (*board).clone();
@@ -23,18 +24,16 @@ fn app() -> Html {
                 });
             });
 
-            // Cleanup function to stop the interval when the component is unmounted
+            // Cleanup interval on component unmount
             move || drop(interval)
         });
     }
 
+    // Keyboard event listener for controlling the game
     {
         let board = board.clone();
         use_effect(move || {
-            // Access the global `window` object
             let window = window().expect("no global `window` exists");
-            
-            // Create a keyboard event listener
             let listener = EventListener::new(&window, "keydown", move |event| {
                 if let Some(event) = event.dyn_ref::<web_sys::KeyboardEvent>() {
                     board.set({
@@ -67,7 +66,7 @@ fn app() -> Html {
                 }
             });
 
-            // Cleanup function to remove the event listener
+            // Cleanup listener on component unmount
             move || drop(listener)
         });
     }
