@@ -174,6 +174,36 @@ impl Board {
         }
     }
 
+    pub fn move_tetromino_left(&mut self) {
+        if let Some(tetromino) = &mut self.tetromino {
+            let mut next_tetromino = tetromino.clone();
+            next_tetromino.move_left();
+            if !self.is_collision(&next_tetromino) {
+                self.tetromino = Some(next_tetromino);
+            }
+        }
+    }
+    
+    pub fn move_tetromino_right(&mut self) {
+        if let Some(tetromino) = &mut self.tetromino {
+            let mut next_tetromino = tetromino.clone();
+            next_tetromino.move_right();
+            if !self.is_collision(&next_tetromino) {
+                self.tetromino = Some(next_tetromino);
+            }
+        }
+    }
+    
+    pub fn move_tetromino_down(&mut self) {
+        if let Some(tetromino) = &mut self.tetromino {
+            let mut next_tetromino = tetromino.clone();
+            next_tetromino.move_down();
+            if !self.is_collision(&next_tetromino) {
+                self.tetromino = Some(next_tetromino);
+            }
+        }
+    }
+
     pub fn clear_tetromino(&mut self) {
         // Clear the tetromino from the grid
         if let Some(tetromino) = &self.tetromino {
@@ -188,19 +218,18 @@ impl Board {
         }
     }
 
-pub fn render(&self) -> Html {
-    html! {
-        <div class="board">
-            <p>{"If you see this, Yew is rendering the component."}</p>
-            { for self.grid.iter().map(|row| html! {
-                <div class="row">
-                    { for row.iter().map(|&cell| html! {
-                        <div class={ if cell { "cell filled" } else { "cell empty" } }></div>
-                    }) }
-                </div>
-            }) }
-        </div>
+    pub fn render(&self) -> Html {
+        html! {
+            <div class="board">
+                <p>{"If you see this, Yew is rendering the component."}</p>
+                { for self.grid.iter().map(|row| html! {
+                    <div class="row">
+                        { for row.iter().map(|&cell| html! {
+                            <div class={ if cell { "cell filled" } else { "cell empty" } }></div>
+                        }) }
+                    </div>
+                }) }
+            </div>
+        }
     }
-}
-
 }
