@@ -20,6 +20,7 @@ fn app() -> Html {
                 board.set({
                     let mut new_board = (*board).clone();
                     new_board.update();
+                    new_board.clear_full_lines();
                     new_board
                 });
             });
