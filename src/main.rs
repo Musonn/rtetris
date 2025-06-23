@@ -75,6 +75,13 @@ fn app() -> Html {
     html! {
         <div>
             <h1>{ "Tetris in Rust!" }</h1>
+            <div class="info-panel">
+                <div class="score">{ format!("Score: {}", board.get_score()) }</div>
+                <div>
+                    <span>{ "Next:" }</span>
+                    { board.render_next_tetromino() }
+                </div>
+            </div>
             { board.render() }
         </div>
     }

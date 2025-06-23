@@ -10,6 +10,7 @@ pub struct Board {
     grid: [[bool; WIDTH]; HEIGHT], // Fixed-size 2D array; true = filled
     tetromino: Option<Tetromino>,  // Active tetromino (None if no active piece)
     next_queue: Vec<TetrominoType>, // Queue of upcoming tetrominos
+    score: usize, // Score for cleared lines
 }
 
 impl Board {
@@ -18,8 +19,10 @@ impl Board {
             grid: [[false; WIDTH]; HEIGHT],
             tetromino: None,
             next_queue: Vec::new(),
+            score: 0,
         };
 
+        board.refill_bag();
         board.spawn_tetromino();
         board.place_tetromino();
 
@@ -42,11 +45,12 @@ impl Board {
     }
 
     pub fn spawn_tetromino(&mut self) {
+        let shape = self.next_queue.remove(0); // Take from front of queue
+        self.tetromino = Some(Tetromino::new(shape));
+
         if self.next_queue.is_empty() {
             self.refill_bag();
         }
-        let shape = self.next_queue.remove(0); // Take from front of queue
-        self.tetromino = Some(Tetromino::new(shape));
     }
 
     pub fn rotate_tetromino(&mut self) {
@@ -139,15 +143,18 @@ impl Board {
     pub fn clear_full_lines(&mut self) {
         let mut new_grid = [[false; WIDTH]; HEIGHT];
         let mut new_row = HEIGHT as isize - 1;
-
+        let mut lines_cleared = 0;
         for y in (0..HEIGHT).rev() {
             if self.grid[y].iter().any(|&cell| !cell) {
                 new_grid[new_row as usize] = self.grid[y];
                 new_row -= 1;
+            } else {
+                lines_cleared += 1;
             }
         }
-
         self.grid = new_grid;
+        // Simple scoring: 100 points per line
+        self.score += lines_cleared * 100;
     }
 
     pub fn clear_grid(&mut self) {
@@ -207,6 +214,35 @@ impl Board {
                 let y = (cell[1] + position[1]) as usize;
                 self.set_cell(x, y, false);
             }
+        }
+    }
+
+    pub fn get_score(&self) -> usize {
+        self.score
+    }
+
+    pub fn get_next_tetromino(&self) -> Option<TetrominoType> {
+        self.next_queue.first().copied()
+    }
+
+    pub fn render_next_tetromino(&self) -> Html {
+        if let Some(next) = self.get_next_tetromino() {
+            let index = next as usize;
+            let cells = crate::tetromino::TETROMINO_ROTATIONS[index][0];
+            html! {
+                <div class="next-tetromino">
+                    { for (0..4).map(|y| html! {
+                        <div class="row">
+                            { for (0..4).map(|x| {
+                                let filled = cells.iter().any(|cell| cell[0] == x && cell[1] == y);
+                                html! { <div class={ if filled { "cell filled" } else { "cell empty" } }></div> }
+                            }) }
+                        </div>
+                    }) }
+                </div>
+            }
+        } else {
+            html! { <div class="next-tetromino"></div> }
         }
     }
 

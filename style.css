@@ -25,3 +25,32 @@
 .filled {
     background: #000000; /* Black */
 }
+
+.info-panel {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+    margin-bottom: 16px;
+}
+
+.score {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.next-tetromino {
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.next-tetromino .row {
+    display: grid;
+    grid-template-columns: repeat(4, 16px);
+    gap: 1px;
+}
+
+.next-tetromino .cell {
+    width: 16px;
+    height: 16px;
+}
