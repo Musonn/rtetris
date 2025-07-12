@@ -1,4 +1,3 @@
-use yew::prelude::*;
 use crate::tetromino::{Tetromino, TetrominoType};
 use rand::seq::SliceRandom;
 
@@ -225,38 +224,26 @@ impl Board {
         self.next_queue.first().copied()
     }
 
-    pub fn render_next_tetromino(&self) -> Html {
-        if let Some(next) = self.get_next_tetromino() {
+    /// Returns the next tetromino's cell positions (relative to a 4x4 grid)
+    pub fn get_next_tetromino_cells(&self) -> Option<[[i32; 2]; 4]> {
+        self.get_next_tetromino().map(|next| {
             let index = next as usize;
-            let cells = crate::tetromino::TETROMINO_ROTATIONS[index][0];
-            html! {
-                <div class="next-tetromino">
-                    { for (0..4).map(|y| html! {
-                        <div class="row">
-                            { for (0..4).map(|x| {
-                                let filled = cells.iter().any(|cell| cell[0] == x && cell[1] == y);
-                                html! { <div class={ if filled { "cell filled" } else { "cell empty" } }></div> }
-                            }) }
-                        </div>
-                    }) }
-                </div>
-            }
-        } else {
-            html! { <div class="next-tetromino"></div> }
-        }
+            crate::tetromino::TETROMINO_ROTATIONS[index][0]
+        })
     }
 
-    pub fn render(&self) -> Html {
-        html! {
-            <div class="board">
-                { for self.grid.iter().map(|row| html! {
-                    <div class="row">
-                        { for row.iter().map(|&cell| html! {
-                            <div class={ if cell { "cell filled" } else { "cell empty" } }></div>
-                        }) }
-                    </div>
-                }) }
-            </div>
+    /// Returns a 2D array representing the current board state, including the active tetromino overlay
+    pub fn get_board_with_tetromino(&self) -> [[bool; WIDTH]; HEIGHT] {
+        let mut board = self.grid;
+        if let Some(tetromino) = &self.tetromino {
+            for cell in tetromino.cells.iter() {
+                let x = tetromino.position[0] + cell[0];
+                let y = tetromino.position[1] + cell[1];
+                if x >= 0 && x < WIDTH as i32 && y >= 0 && y < HEIGHT as i32 {
+                    board[y as usize][x as usize] = true;
+                }
+            }
         }
+        board
     }
 }
