@@ -1,20 +1,37 @@
+
 # RTetris
 
-A simple Tetris game implemented in Rust using the Yew framework.
+A simple Tetris game implemented in Rust using the [Yew](https://yew.rs/) framework for WebAssembly.
 
 ## Features
 
-- **Tetromino Rotation**: Rotate tetrominoes with smooth transitions.
-- **Random Tetromino Spawn**: Generate random tetromino shapes for gameplay.
-- **Next Tetris Display**: Show the next tetromino coming down
+- **Classic Tetris Gameplay**: Move, rotate, and drop tetrominoes on a 10x20 board.
+- **Tetromino Rotation**: Rotate pieces with wall kick logic.
+- **Next Tetromino Preview**: See which piece is coming up next.
+- **Score Tracking**: Score increases as you clear lines.
+- **Keyboard Controls**: Use arrow keys to play (← → ↓ to move, ↑ to rotate).
+
+## Controls
+
+- **Left/Right Arrow**: Move tetromino left/right
+- **Down Arrow**: Move tetromino down
+- **Up Arrow**: Rotate tetromino
+
+## How to Build & Run
+
+1. **Install Rust** (if you don't have it): https://rustup.rs/
+2. **Install Trunk** (for building Yew apps):
+   ```sh
+   cargo install trunk
+   ```
+3. **Build and run locally:**
+   ```sh
+   trunk serve --open
+   ```
+   This will open the game in your browser at `http://localhost:8080`.
 
 ## TODO
 
-### Advanced Wall Kick
-When a rotation is attempted, 5 positions are sequentially tested (inclusive of basic rotation); if none are available, the rotation fails completely.
-
-### Show the Next Tetromino
-Add a peek_next() to show the upcoming piece.
-
-### Scoring System by Level
-Implement the original Nintendo scoring system, where points awarded for clearing lines increase with the game level and the number of lines cleared at once.
+- Advanced wall kick logic for rotations
+- Scoring system by level (classic NES rules)
+- fix bug: keeping pressing ← → ↑ will keep the tetrimino afloat
