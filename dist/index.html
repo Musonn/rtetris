@@ -5,16 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rust Tetris</title>
     <link rel="stylesheet" href="/style-d4b089dea04424f7.css" integrity="sha384-i4tczYVB+AKA+sQ+4smmf9p182Kq2TOIQFnOPeZnhuPYaJJniE37bLGSvygRjmTQ"/>
-<link rel="modulepreload" href="/rtetris-e3e88b727482265a.js" crossorigin="anonymous" integrity="sha384-ehVKDnHUhjR5jE69T7L7PesXnylmDrlYm/kwCqj4JEiXsu14uxFbyZ+YbzgYJV/y"><link rel="preload" href="/rtetris-e3e88b727482265a_bg.wasm" crossorigin="anonymous" integrity="sha384-YNYxzeSfylM30jmBvIShc8LTHpEhKhHRNUU4FQdrk4gD4vTd67b6JEGY0e8Pl2o4" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="/rtetris-f9ade5663487eff.js" crossorigin="anonymous" integrity="sha384-K4TylgK6OXuyYGXOHDAWtF7EbKrDbBjtQZE6dKRzjkVjfHQIy95Ast9EGX5mvinD"><link rel="preload" href="/rtetris-f9ade5663487eff_bg.wasm" crossorigin="anonymous" integrity="sha384-jhEua6kEgABalBlM4XCRNE8+9KvoUcUC4ay2RDlcJzIupWFMzL6xXswlhuUHXqNW" as="fetch" type="application/wasm"></head>
 <body>
-    <script type="module">
-        import init from "./rtetris.js";
-        init();
-    </script>
+    <h1>Tetris (Rust Backend)</h1>
+    <div class="info">
+        <span class="score">Score: <span id="score">0</span></span>
+    </div>
+    <div id="board"></div>
+    <div class="controls">
+        <p>Controls: ← → ↓ (move), ↑ (rotate)</p>
+    </div>
+    <script src="main.js"></script>
 
 <script type="module">
-import init, * as bindings from '/rtetris-e3e88b727482265a.js';
-const wasm = await init({ module_or_path: '/rtetris-e3e88b727482265a_bg.wasm' });
+import init, * as bindings from '/rtetris-f9ade5663487eff.js';
+const wasm = await init({ module_or_path: '/rtetris-f9ade5663487eff_bg.wasm' });
 
 
 window.wasmBindings = bindings;
