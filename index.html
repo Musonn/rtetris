@@ -7,11 +7,17 @@
     <link data-trunk rel="css" href="style.css">
 </head>
 <body>
-    <h1>Tetris (Rust Backend)</h1>
-    <div class="info">
-        <span class="score">Score: <span id="score">0</span></span>
+    <h1 style="margin-top:32px;">Tetris (Rust Backend)</h1>
+    <div class="info-panel">
+        <div class="score">Score: <span id="score">0</span></div>
+        <div class="next-container">
+            <span>Next:</span>
+            <div class="next-tetromino" id="next-tetromino"></div>
+        </div>
     </div>
-    <div id="board"></div>
+    <div class="board-container">
+        <div id="board"></div>
+    </div>
     <div class="controls">
         <p>Controls: ← → ↓ (move), ↑ (rotate)</p>
     </div>
