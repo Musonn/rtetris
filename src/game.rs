@@ -11,6 +11,7 @@ pub struct Board {
     tetromino: Option<Tetromino>,  // Active tetromino
     next_queue: Vec<TetrominoType>, // Upcoming tetrominos
     score: usize, // Cleared lines score
+    is_game_over: bool, // Game over state
 }
 
 impl Board {
@@ -21,6 +22,7 @@ impl Board {
             tetromino: None,
             next_queue: Vec::new(),
             score: 0,
+            is_game_over: false,
         };
         board.refill_bag();
         board.spawn_tetromino();
@@ -106,6 +108,9 @@ impl Board {
 
     // --- Board State & Updates ---
     pub fn update(&mut self) {
+        if self.is_game_over {
+            return;
+        }
         self.clear_tetromino();
         let mut landed = false;
         if let Some(tetromino) = &self.tetromino {
@@ -125,7 +130,11 @@ impl Board {
         }
         self.place_tetromino();
         if landed {
+            // Check if new tetromino collides immediately after spawn
             self.spawn_tetromino();
+            if self.should_game_over() {
+                self.set_game_over(true);
+            }
         }
     }
 
@@ -147,6 +156,31 @@ impl Board {
 
     pub fn clear_grid(&mut self) {
         self.grid = [[false; WIDTH]; HEIGHT];
+    }
+
+    pub fn should_game_over(&self) -> bool {
+        if let Some(tetromino) = &self.tetromino {
+            for cell in &tetromino.cells {
+                let x = (cell[0] + tetromino.position[0]) as usize;
+                let y = (cell[1] + tetromino.position[1]) as usize;
+                if y < HEIGHT && !self.is_cell_empty(x, y) {
+                    // If the cell is already filled, game over
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    pub fn set_game_over(&mut self, game_over: bool) {
+        self.is_game_over = game_over;
+        if game_over {
+            self.tetromino = None;
+        }
+    }
+
+    pub fn get_game_over(&self) -> bool {
+        self.is_game_over
     }
 
     // --- Cell & Collision Helpers ---

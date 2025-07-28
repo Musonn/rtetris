@@ -72,6 +72,13 @@ fn app() -> Html {
         });
     }
 
+    let restart = {
+        let board = board.clone();
+        Callback::from(move |_| {
+            board.set(Board::new());
+        })
+    };
+
     html! {
         <div>
             <h1>{ "Tetris in Rust!" }</h1>
@@ -82,7 +89,14 @@ fn app() -> Html {
                     { board.render_next_tetromino() }
                 </div>
             </div>
-            { board.render() }
+            if board.get_game_over() {
+                <div class="game-over">
+                    <h2>{ "Game Over" }</h2>
+                    <button onclick={restart}>{ "Restart" }</button>
+                </div>
+            } else {
+                { board.render() }
+            }
         </div>
     }
 }
