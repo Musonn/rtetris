@@ -1,6 +1,8 @@
 
 # RTetris
 
+https://github.com/user-attachments/assets/980b9123-7105-48a1-94a3-7a08d767a6a9
+
 A simple Tetris game implemented in Rust using the [Yew](https://yew.rs/) framework for WebAssembly.
 
 ## Features
@@ -35,3 +37,19 @@ A simple Tetris game implemented in Rust using the [Yew](https://yew.rs/) framew
 - Advanced wall kick logic for rotations
 - Scoring system by level (classic NES rules)
 - fix bug: keeping pressing ← → ↑ will keep the tetrimino afloat
+
+## Issues & Troubleshooting
+
+### Common Build Issues
+
+**Error: `can't find crate for 'core'`**
+
+```text
+error[E0463]: can't find crate for `core`
+```
+
+**Solution:** Install the WebAssembly target for Rust:
+
+```sh
+rustup target add wasm32-unknown-unknown
+```

@@ -9,9 +9,10 @@ pub const HEIGHT: usize = 20;
 pub struct Board {
     grid: [[bool; WIDTH]; HEIGHT], // true = filled
     tetromino: Option<Tetromino>,  // Active tetromino
+    ghost_tetromino: Option<Tetromino>, // Where the active tetromino will land  (ghost)
     next_queue: Vec<TetrominoType>, // Upcoming tetrominos
     score: usize, // Cleared lines score
-    is_game_over: bool, // Game over state
+    is_game_over: bool,
 }
 
 impl Board {
@@ -20,13 +21,14 @@ impl Board {
         let mut board = Self {
             grid: [[false; WIDTH]; HEIGHT],
             tetromino: None,
+            ghost_tetromino: None,
             next_queue: Vec::new(),
             score: 0,
             is_game_over: false,
         };
         board.refill_bag();
         board.spawn_tetromino();
-        board.place_tetromino();
+        board.predict_tetromino();
         board
     }
 
@@ -111,31 +113,23 @@ impl Board {
         if self.is_game_over {
             return;
         }
-        self.clear_tetromino();
-        let mut landed = false;
-        if let Some(tetromino) = &self.tetromino {
-            for cell in &tetromino.cells {
-                let x = (cell[0] + tetromino.position[0]) as usize;
-                let y = (cell[1] + tetromino.position[1] + 1) as usize;
-                if y >= HEIGHT || !self.is_cell_empty(x, y) {
-                    landed = true;
-                    break;
+        if let Some(active_clone) = self.tetromino.clone() {
+            let mut candidate = active_clone.clone();
+            candidate.move_down();
+            if self.is_collision(&candidate) {
+                self.lock_tetromino();
+                self.clear_full_lines();
+                self.spawn_tetromino();
+                if let Some(t) = &self.tetromino {
+                    if self.is_collision(t) {
+                        self.set_game_over(true);
+                    }
                 }
+            } else if let Some(active) = &mut self.tetromino {
+                active.move_down();
             }
         }
-        if let Some(tetromino) = &mut self.tetromino {
-            if !landed {
-                tetromino.move_down();
-            }
-        }
-        self.place_tetromino();
-        if landed {
-            // Check if new tetromino collides immediately after spawn
-            self.spawn_tetromino();
-            if self.should_game_over() {
-                self.set_game_over(true);
-            }
-        }
+        self.predict_tetromino();
     }
 
     pub fn clear_full_lines(&mut self) {
@@ -154,24 +148,6 @@ impl Board {
         self.score += lines_cleared * 100;
     }
 
-    pub fn clear_grid(&mut self) {
-        self.grid = [[false; WIDTH]; HEIGHT];
-    }
-
-    pub fn should_game_over(&self) -> bool {
-        if let Some(tetromino) = &self.tetromino {
-            for cell in &tetromino.cells {
-                let x = (cell[0] + tetromino.position[0]) as usize;
-                let y = (cell[1] + tetromino.position[1]) as usize;
-                if y < HEIGHT && !self.is_cell_empty(x, y) {
-                    // If the cell is already filled, game over
-                    return true;
-                }
-            }
-        }
-        false
-    }
-
     pub fn set_game_over(&mut self, game_over: bool) {
         self.is_game_over = game_over;
         if game_over {
@@ -184,18 +160,6 @@ impl Board {
     }
 
     // --- Cell & Collision Helpers ---
-    pub fn is_cell_empty(&self, x: usize, y: usize) -> bool {
-        self.grid[y][x] == false
-    }
-
-    pub fn set_cell(&mut self, x: usize, y: usize, filled: bool) {
-        if x < WIDTH && y < HEIGHT {
-            self.grid[y][x] = filled;
-        } else {
-            panic!("Coordinates out of bounds");
-        }
-    }
-
     pub fn is_collision(&self, tetromino: &Tetromino) -> bool {
         for cell in &tetromino.cells {
             let x = (cell[0] + tetromino.position[0]) as isize;
@@ -210,27 +174,28 @@ impl Board {
         false
     }
 
-    // --- Tetromino Placement & Clearing ---
-    pub fn place_tetromino(&mut self) {
-        if let Some(tetromino) = &self.tetromino {
-            let cells = tetromino.cells.clone();
-            let position = tetromino.position;
-            for cell in cells.iter() {
-                let x = (cell[0] + position[0]) as usize;
-                let y = (cell[1] + position[1]) as usize;
-                self.set_cell(x, y, true);
+    // --- Tetromino Placement ---
+    pub fn predict_tetromino(&mut self) {
+        // Predict landing position
+        if let Some(tetromino) = &mut self.tetromino {
+            let mut landing_tetromino = tetromino.clone();
+            while !self.is_collision(&landing_tetromino) {
+                landing_tetromino.move_down();
             }
+            // Move back up one position
+            landing_tetromino.position[1] -= 1;
+            self.ghost_tetromino = Some(landing_tetromino);
         }
     }
 
-    pub fn clear_tetromino(&mut self) {
+    fn lock_tetromino(&mut self) {
         if let Some(tetromino) = &self.tetromino {
-            let cells = tetromino.cells.clone();
-            let position = tetromino.position;
-            for cell in cells.iter() {
-                let x = (cell[0] + position[0]) as usize;
-                let y = (cell[1] + position[1]) as usize;
-                self.set_cell(x, y, false);
+            for cell in tetromino.cells.iter() {
+                let x = (cell[0] + tetromino.position[0]) as usize;
+                let y = (cell[1] + tetromino.position[1]) as usize;
+                if x < WIDTH && y < HEIGHT {
+                    self.grid[y][x] = true;
+                }
             }
         }
     }
@@ -251,33 +216,73 @@ impl Board {
         })
     }
 
-    // --- Board Rendering Helpers ---
-    pub fn get_board_with_tetromino(&self) -> [[bool; WIDTH]; HEIGHT] {
-        let mut board = self.grid;
-        if let Some(tetromino) = &self.tetromino {
-            for cell in tetromino.cells.iter() {
-                let x = tetromino.position[0] + cell[0];
-                let y = tetromino.position[1] + cell[1];
-                if x >= 0 && x < WIDTH as i32 && y >= 0 && y < HEIGHT as i32 {
-                    board[y as usize][x as usize] = true;
+    pub fn is_next_preview_cell(&self, x: usize, y: usize) -> bool {
+        if let Some(cells) = self.get_next_tetromino_cells() {
+            for cell in &cells {
+                if cell[0] == x as i32 && cell[1] == y as i32 {
+                    return true;
                 }
             }
         }
-        board
+        false
     }
 
-    pub fn render(&self) -> Html {
-        let board = self.get_board_with_tetromino();
+    // --- Board Rendering Helpers ---
+    pub fn get_grid(&self) -> &[[bool; WIDTH]; HEIGHT] {
+        &self.grid
+    }
+
+    pub fn render_static(&self) -> Html {
         html! {
-            <div class="board">
+            <div class="board static-layer">
                 { for (0..HEIGHT).map(|y| html! {
                     <div class="row">
                         { for (0..WIDTH).map(|x| {
-                            let filled = board[y][x];
+                            let filled = self.grid[y][x];
                             let class = if filled { "cell filled" } else { "cell empty" };
                             html! { <div class={class}></div> }
                         })}
                     </div>
+                })}
+            </div>
+        }
+    }
+
+    pub fn render_active(&self) -> Html {
+        let mut active_cells = Vec::new();
+        
+        // Collect ghost cells
+        if let Some(predicted) = &self.ghost_tetromino {
+            for cell in predicted.cells.iter() {
+                let x = predicted.position[0] + cell[0];
+                let y = predicted.position[1] + cell[1];
+                if x >= 0 && x < WIDTH as i32 && y >= 0 && y < HEIGHT as i32 {
+                    active_cells.push((x as usize, y as usize, "ghost"));
+                }
+            }
+        }
+        
+        // Collect active cells (will override ghost if overlap)
+        if let Some(active) = &self.tetromino {
+            for cell in active.cells.iter() {
+                let x = active.position[0] + cell[0];
+                let y = active.position[1] + cell[1];
+                if x >= 0 && x < WIDTH as i32 && y >= 0 && y < HEIGHT as i32 {
+                    // Remove ghost at this position if exists
+                    active_cells.retain(|&(cx, cy, _)| !(cx == x as usize && cy == y as usize));
+                    active_cells.push((x as usize, y as usize, "active"));
+                }
+            }
+        }
+        
+        html! {
+            <div class="active-layer">
+                { for active_cells.iter().map(|(x, y, class_type)| {
+                    let left = 10 + x * 21; // 10px padding + x * (20px cell + 1px gap)
+                    let top = 10 + y * 21;  // 10px padding + y * (20px cell + 1px gap)
+                    let style = format!("position: absolute; left: {}px; top: {}px; width: 20px; height: 20px; border-radius: 3px;", left, top);
+                    let class = format!("cell {}", class_type);
+                    html! { <div class={class} style={style}></div> }
                 })}
             </div>
         }
@@ -289,7 +294,7 @@ impl Board {
                 { for (0..4).map(|y| html! {
                     <div class="row">
                         { for (0..4).map(|x| {
-                            let filled = self.next_tetromino_cell(x, y);
+                            let filled = self.is_next_preview_cell(x, y);
                             let class = if filled { "cell filled" } else { "cell empty" };
                             html! { <div class={class}></div> }
                         })}
@@ -297,16 +302,5 @@ impl Board {
                 })}
             </div>
         }
-    }
-
-    pub fn next_tetromino_cell(&self, x: usize, y: usize) -> bool {
-        if let Some(cells) = self.get_next_tetromino_cells() {
-            for cell in &cells {
-                if cell[0] == x as i32 && cell[1] == y as i32 {
-                    return true;
-                }
-            }
-        }
-        false
     }
 }

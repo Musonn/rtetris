@@ -20,7 +20,6 @@ fn app() -> Html {
                 board.set({
                     let mut new_board = (*board).clone();
                     new_board.update();
-                    new_board.clear_full_lines();
                     new_board
                 });
             });
@@ -41,24 +40,20 @@ fn app() -> Html {
                         let mut new_board = (*board).clone();
                         match event.key().as_str() {
                             "ArrowLeft" => {
-                                new_board.clear_tetromino();
                                 new_board.move_tetromino_left();
-                                new_board.place_tetromino();
+                                new_board.predict_tetromino();
                             }
                             "ArrowRight" => {
-                                new_board.clear_tetromino();
                                 new_board.move_tetromino_right();
-                                new_board.place_tetromino();
+                                new_board.predict_tetromino();
                             }
                             "ArrowDown" => {
-                                new_board.clear_tetromino();
                                 new_board.move_tetromino_down();
-                                new_board.place_tetromino();
+                                new_board.predict_tetromino();
                             }
                             "ArrowUp" => {
-                                new_board.clear_tetromino();
                                 new_board.rotate_tetromino();
-                                new_board.place_tetromino();
+                                new_board.predict_tetromino();
                             }
                             _ => {}
                         }
@@ -95,7 +90,10 @@ fn app() -> Html {
                     <button onclick={restart}>{ "Restart" }</button>
                 </div>
             } else {
-                { board.render() }
+                <div class="board-wrapper">
+                    { board.render_static() }
+                    { board.render_active() }
+                </div>
             }
         </div>
     }

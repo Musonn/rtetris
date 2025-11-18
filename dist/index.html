@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rust Tetris</title>
-    <link rel="stylesheet" href="/style-32a30934299f727e.css" integrity="sha384-yyhB9zcWDCrLf71Q6DyGlq6xvx33wtgkw74s2QlY+ZzHzNgESbYb7+HYQtBg1fUy"/>
-<link rel="modulepreload" href="/rtetris-2ce9ce000029833.js" crossorigin="anonymous" integrity="sha384-D2PubZ7Sis3AIAPrpMkQ0l28BIm15wjqLFLUvYupB6M+Bdt9aioMkC/NDA86118p"><link rel="preload" href="/rtetris-2ce9ce000029833_bg.wasm" crossorigin="anonymous" integrity="sha384-TrqxmJchVyhPnyZLJ168VF2ebOuo5JSY0X+ValESvLSi9Pe0mGMIkbA4CSd/qZ0r" as="fetch" type="application/wasm"></head>
+    <link rel="stylesheet" href="/style-cb65ac7d35a49c8e.css" integrity="sha384-FV3e6BLkjeuh73zTfSTP9gxz59YbvKK3UbtR+znkfIVLo1M2h1ezVoKHKWacJ1Rp"/>
+<link rel="modulepreload" href="/rtetris-7f7b2dff3554f143.js" crossorigin="anonymous" integrity="sha384-muDAXlBtynOnXVPckwvLFD2owVMNPMEBax4CaZQ9lw8xFN+7Uq/89UR5ZXWs+Byl"><link rel="preload" href="/rtetris-7f7b2dff3554f143_bg.wasm" crossorigin="anonymous" integrity="sha384-rtrYtHTh/tey6XINvJBaB8shEMOqHe7JWwMzMWTHhenS/howlb0YvDBqhhMOi8ea" as="fetch" type="application/wasm"></head>
 <body>
     <h1 style="margin-top:32px;">Tetris (Rust Backend)</h1>
     <div class="info-panel">
@@ -24,8 +24,8 @@
     <script src="main.js"></script>
 
 <script type="module">
-import init, * as bindings from '/rtetris-2ce9ce000029833.js';
-const wasm = await init({ module_or_path: '/rtetris-2ce9ce000029833_bg.wasm' });
+import init, * as bindings from '/rtetris-7f7b2dff3554f143.js';
+const wasm = await init({ module_or_path: '/rtetris-7f7b2dff3554f143_bg.wasm' });
 
 
 window.wasmBindings = bindings;
