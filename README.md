@@ -1,7 +1,11 @@
 
 # RTetris
 
-https://github.com/user-attachments/assets/980b9123-7105-48a1-94a3-7a08d767a6a9
+
+
+https://github.com/user-attachments/assets/bbe6a0c6-a8be-4f62-8072-52d4481bd47f
+
+
 
 A simple Tetris game implemented in Rust using the [Yew](https://yew.rs/) framework for WebAssembly.
 
