@@ -1,5 +1,6 @@
 use crate::tetromino::{Tetromino, TetrominoType};
 use rand::seq::SliceRandom;
+use std::collections::VecDeque;
 use yew::{Html, html};
 
 pub const WIDTH: usize = 10;
@@ -7,11 +8,11 @@ pub const HEIGHT: usize = 20;
 
 #[derive(Clone)]
 pub struct Board {
-    grid: [[bool; WIDTH]; HEIGHT],      // true = filled
-    tetromino: Option<Tetromino>,       // Active tetromino
-    ghost_tetromino: Option<Tetromino>, // Where the active tetromino will land  (ghost)
-    next_queue: Vec<TetrominoType>,     // Upcoming tetrominos
-    score: usize,                       // Cleared lines score
+    grid: [[bool; WIDTH]; HEIGHT],       // true = filled
+    tetromino: Option<Tetromino>,        // Active tetromino
+    ghost_tetromino: Option<Tetromino>,  // Where the active tetromino will land  (ghost)
+    next_queue: VecDeque<TetrominoType>, // Upcoming tetrominos
+    score: usize,                        // Cleared lines score
     is_game_over: bool,
 }
 
@@ -22,7 +23,7 @@ impl Board {
             grid: [[false; WIDTH]; HEIGHT],
             tetromino: None,
             ghost_tetromino: None,
-            next_queue: Vec::new(),
+            next_queue: VecDeque::with_capacity(7),
             score: 0,
             is_game_over: false,
         };
@@ -44,11 +45,11 @@ impl Board {
         ];
         let mut rng = rand::rng();
         types.shuffle(&mut rng);
-        self.next_queue.extend_from_slice(&types);
+        self.next_queue.extend(types.into_iter());
     }
 
     pub fn spawn_tetromino(&mut self) {
-        let shape = self.next_queue.remove(0);
+        let shape = self.next_queue.pop_front().unwrap();
         self.tetromino = Some(Tetromino::new(shape));
         if self.next_queue.is_empty() {
             self.refill_bag();
@@ -205,23 +206,18 @@ impl Board {
         self.score
     }
 
-    pub fn get_next_tetromino(&self) -> Option<TetrominoType> {
-        self.next_queue.first().copied()
+    pub fn get_next_tetromino(&self) -> TetrominoType {
+        *self.next_queue.front().unwrap()
     }
 
-    pub fn get_next_tetromino_cells(&self) -> Option<[[i32; 2]; 4]> {
-        self.get_next_tetromino().map(|next| {
-            let index = next as usize;
-            crate::tetromino::TETROMINO_ROTATIONS[index][0]
-        })
+    pub fn get_next_tetromino_cells(&self) -> [[i32; 2]; 4] {
+        crate::tetromino::TETROMINO_ROTATIONS[self.get_next_tetromino() as usize][0]
     }
 
     pub fn is_next_preview_cell(&self, x: usize, y: usize) -> bool {
-        if let Some(cells) = self.get_next_tetromino_cells() {
-            for cell in &cells {
-                if cell[0] == x as i32 && cell[1] == y as i32 {
-                    return true;
-                }
+        for cell in self.get_next_tetromino_cells() {
+            if cell[0] == x as i32 && cell[1] == y as i32 {
+                return true;
             }
         }
         false
