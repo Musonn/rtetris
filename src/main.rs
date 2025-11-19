@@ -2,11 +2,11 @@ mod game;
 mod tetromino;
 
 use game::Board;
-use yew::prelude::*;
 use gloo_events::EventListener;
 use gloo_timers::callback::Interval;
-use web_sys::window;
 use wasm_bindgen::JsCast;
+use web_sys::window;
+use yew::prelude::*;
 
 #[function_component(App)]
 fn app() -> Html {

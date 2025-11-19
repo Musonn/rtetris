@@ -7,11 +7,11 @@ pub const HEIGHT: usize = 20;
 
 #[derive(Clone)]
 pub struct Board {
-    grid: [[bool; WIDTH]; HEIGHT], // true = filled
-    tetromino: Option<Tetromino>,  // Active tetromino
+    grid: [[bool; WIDTH]; HEIGHT],      // true = filled
+    tetromino: Option<Tetromino>,       // Active tetromino
     ghost_tetromino: Option<Tetromino>, // Where the active tetromino will land  (ghost)
-    next_queue: Vec<TetrominoType>, // Upcoming tetrominos
-    score: usize, // Cleared lines score
+    next_queue: Vec<TetrominoType>,     // Upcoming tetrominos
+    score: usize,                       // Cleared lines score
     is_game_over: bool,
 }
 
@@ -42,7 +42,7 @@ impl Board {
             TetrominoType::J,
             TetrominoType::L,
         ];
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         types.shuffle(&mut rng);
         self.next_queue.extend_from_slice(&types);
     }
@@ -228,10 +228,6 @@ impl Board {
     }
 
     // --- Board Rendering Helpers ---
-    pub fn get_grid(&self) -> &[[bool; WIDTH]; HEIGHT] {
-        &self.grid
-    }
-
     pub fn render_static(&self) -> Html {
         html! {
             <div class="board static-layer">
@@ -250,7 +246,7 @@ impl Board {
 
     pub fn render_active(&self) -> Html {
         let mut active_cells = Vec::new();
-        
+
         // Collect ghost cells
         if let Some(predicted) = &self.ghost_tetromino {
             for cell in predicted.cells.iter() {
@@ -261,7 +257,7 @@ impl Board {
                 }
             }
         }
-        
+
         // Collect active cells (will override ghost if overlap)
         if let Some(active) = &self.tetromino {
             for cell in active.cells.iter() {
@@ -274,7 +270,7 @@ impl Board {
                 }
             }
         }
-        
+
         html! {
             <div class="active-layer">
                 { for active_cells.iter().map(|(x, y, class_type)| {
