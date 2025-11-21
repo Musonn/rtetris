@@ -12,7 +12,6 @@ use yew::prelude::*;
 // Interval should have implemented the Sync and Send trait because it introduces parallelization, but it wasn't,
 // which happens to resolve the issue that use_state is implemented with only Rc but not Arc internally.
 // If you uncomment the Sync and Send trait below, the codes will no longer compile.
-// F*** gloo_timers. F*** yew.
 fn new_interval<F>(millis: u32, callback: F) -> Interval
 where
     F: 'static /*+ Sync + Send*/ + FnMut(),
@@ -23,7 +22,6 @@ where
 // Callback should have implemented the Sync and Send trait because it introduces parallelization, but it wasn't,
 // which happens to resolve the issue that use_state is implemented with only Rc but not Arc internally.
 // If you uncomment the Sync and Send trait below, the codes will no longer compile.
-// F*** yew.
 fn callback_from<IN, OUT, F: Fn(IN) -> OUT + 'static>(func: F) -> Callback<IN, OUT>
 // where
 //     F: Sync + Send,
@@ -35,7 +33,6 @@ fn callback_from<IN, OUT, F: Fn(IN) -> OUT + 'static>(func: F) -> Callback<IN, O
 fn app() -> Html {
     // Yew really should have exposed the internal Rc (or Arc, if yew was implemented correctly for parallelization),
     // so I wouldn't have to fill another Arc into use_state's Rc/Arc.
-    // F*** yew.
     let board = use_state(|| Arc::new(RwLock::new(Board::new())));
     let game_over = match board.read() {
         Ok(board) => board.get_game_over(),
