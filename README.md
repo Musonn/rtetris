@@ -40,7 +40,6 @@ A simple Tetris game implemented in Rust using the [Yew](https://yew.rs/) framew
 
 - Advanced wall kick logic for rotations
 - Scoring system by level (classic NES rules)
-- fix bug: keeping pressing ← → ↑ will keep the tetrimino afloat
 
 ## Issues & Troubleshooting
 
