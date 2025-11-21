@@ -3,7 +3,7 @@
 
 
 
-https://github.com/user-attachments/assets/bbe6a0c6-a8be-4f62-8072-52d4481bd47f
+https://Musonn.github.io/rtetris
 
 
 
@@ -40,7 +40,6 @@ A simple Tetris game implemented in Rust using the [Yew](https://yew.rs/) framew
 
 - Advanced wall kick logic for rotations
 - Scoring system by level (classic NES rules)
-- fix bug: keeping pressing ← → ↑ will keep the tetrimino afloat
 
 ## Issues & Troubleshooting
 

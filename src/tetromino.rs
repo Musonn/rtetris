@@ -1,6 +1,12 @@
 #[derive(Clone, Copy)]
 pub enum TetrominoType {
-    I, O, T, S, Z, J, L,
+    I,
+    O,
+    T,
+    S,
+    Z,
+    J,
+    L,
 }
 
 pub const TETROMINO_ROTATIONS: [[[[i32; 2]; 4]; 4]; 7] = [
@@ -58,8 +64,8 @@ pub const TETROMINO_ROTATIONS: [[[[i32; 2]; 4]; 4]; 7] = [
 #[derive(Clone)]
 pub struct Tetromino {
     pub shape: TetrominoType,
-    pub position: [i32; 2], // (x, y) position on the board
-    pub rotation: usize, // 0 to 3
+    pub position: [i32; 2],   // (x, y) position on the board
+    pub rotation: usize,      // 0 to 3
     pub cells: [[i32; 2]; 4], // Block positions
 }
 
